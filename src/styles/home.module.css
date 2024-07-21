@@ -1,0 +1,144 @@
+/* global.css */
+
+.App {
+    font-family: 'Arial', sans-serif;
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: white;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
+.taskHeader {
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
+}
+
+.taskForm {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.taskNameInput,
+.taskPrioritySelect,
+.taskDeadlineInput,
+.addTaskButton {
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.taskPrioritySelect {
+    cursor: pointer;
+    background-color: #f0f0f0;
+}
+
+.addTaskButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.addTaskButton:hover {
+    background-color: #0056b3;
+}
+
+.searchFilter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.searchInput,
+.filterPrioritySelect {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.taskTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.taskTable th,
+.taskTable td {
+    padding: 10px;
+    text-align: left;
+}
+
+.taskTable th {
+    background-color: #007bff;
+    color: white;
+}
+
+.taskTable tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.completedTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.completedTable th,
+.completedTable td {
+    padding: 10px;
+    text-align: left;
+}
+
+.completedTable th {
+    background-color: #007bff;
+    color: white;
+}
+
+.completedTable tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.deleteTaskButton {
+    margin-right: 5px;
+    cursor: pointer;
+    padding: 12px;
+    background: crimson;
+    border-radius: 10px;
+    border: none;
+    color: white;
+}
+
+.markDoneButton,
+.editTaskButton {
+    margin-right: 5px;
+    cursor: pointer;
+    padding: 12px;
+    background: #007bff;
+    border-radius: 10px;
+    border: none;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .taskForm {
+        flex-direction: column;
+    }
+
+    .searchFilter {
+        flex-direction: column;
+    }
+}
