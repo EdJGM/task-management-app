@@ -1,9 +1,35 @@
-import { useState, ChangeEvent } from "react";
+// src/pages/index.tsx
+import { useState, useEffect, ChangeEvent } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useTasks } from "@/components/useTasks";
+import { useRouter } from "next/router";
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "../firebase";
 
-function TaskScheduler() {
+interface HomePageProps {
+    email?: string;
+}
+
+function HomePage({ email }: HomePageProps) {
+    const router = useRouter();
+
+    async function handleLogout() {
+        await signOut(getAuth(app));
+        await fetch("/api/logout");
+        router.push("/login");
+    }
+
+    return (
+        <main className="flex min-h-screen flex-col items-center justify-center p-24">
+            <h1 className="text-xl mb-4">Super secure home page</h1>
+            <p className="mb-8"> Only <strong>{email}</strong> holds the magic key to this kingdom! </p>
+            <button onClick={handleLogout} className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-primary-800" > Logout </button>
+        </main>
+    );
+}
+
+function TaskScheduler({ tokens }: { tokens: string[] }) {
     const { tasks, completedTasks, addTask, editTask, deleteTask, markDone } = useTasks();
     const [taskName, setTaskName] = useState<string>("");
     const [taskPriority, setTaskPriority] = useState<string>("Top");
@@ -172,4 +198,22 @@ function TaskScheduler() {
     );
 }
 
-export default TaskScheduler;
+export default function Home() {
+    const [tokens, setTokens] = useState(null);
+
+    useEffect(() => {
+        async function fetchTokens() {
+            const res = await fetch("/api/tokens");
+            const data = await res.json();
+            setTokens(data.tokens);
+        }
+
+        fetchTokens();
+    }, []);
+
+    if (!tokens) {
+        return <div>Loading...</div>;
+    }
+
+    return <TaskScheduler tokens={tokens} />;
+}
