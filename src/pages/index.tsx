@@ -48,17 +48,17 @@ function TaskScheduler() {
     return (
         <div className={styles.App}>
             <Head>
-                <title>Task Management - Geeksforgeeks.org</title>
+                <title>Gestión de Tareas</title>
             </Head>
             <header className={styles.taskHeader}>
-                <h1>Task Management</h1>
+                <h1>Gestión de Tareas</h1>
             </header>
             <main>
                 <div className={styles.taskForm}>
                     <input
                         type="text"
                         className={styles.taskNameInput}
-                        placeholder="Enter task..."
+                        placeholder="Introducir tarea..."
                         value={taskName}
                         onChange={handleTaskNameChange}
                     />
@@ -67,9 +67,9 @@ function TaskScheduler() {
                         value={taskPriority}
                         onChange={handleTaskPriorityChange}
                     >
-                        <option value="Top">Top Priority</option>
-                        <option value="Middle">Middle Priority</option>
-                        <option value="Low">Less Priority</option>
+                        <option value="Top">Alta Prioridad</option>
+                        <option value="Middle">Media Prioridad</option>
+                        <option value="Low">Baja Prioridad</option>
                     </select>
                     <input
                         type="date"
@@ -78,14 +78,14 @@ function TaskScheduler() {
                         onChange={handleTaskDeadlineChange}
                     />
                     <button className={styles.addTaskButton} onClick={handleAddTask}>
-                        Add Task
+                        Agregar Tareas
                     </button>
                 </div>
                 <div className={styles.searchFilter}>
                     <input
                         type="text"
                         className={styles.searchInput}
-                        placeholder="Search tasks"
+                        placeholder="Buscar tarea/s..."
                         value={searchKeyword}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchKeyword(e.target.value)}
                     />
@@ -94,21 +94,21 @@ function TaskScheduler() {
                         value={filterPriority}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilterPriority(e.target.value)}
                     >
-                        <option value="">All Priorities</option>
-                        <option value="Top">Top Priority</option>
-                        <option value="Middle">Middle Priority</option>
-                        <option value="Low">Less Priority</option>
+                        <option value="">Todo</option>
+                        <option value="Top">Alta Prioridad</option>
+                        <option value="Middle">Media Prioridad</option>
+                        <option value="Low">Baja Prioridad</option>
                     </select>
                 </div>
-                <h2 className={styles.heading}>Upcoming Tasks</h2>
+                <h2 className={styles.heading}>Próximas tareas</h2>
                 <div className={styles.taskList}>
                     <table className={styles.taskTable}>
                         <thead>
                             <tr>
-                                <th>Task Name</th>
-                                <th>Priority</th>
-                                <th>Deadline</th>
-                                <th>Action</th>
+                                <th>Nombre de la tarea</th>
+                                <th>Prioridad</th>
+                                <th>Fecha Limite</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,19 +124,19 @@ function TaskScheduler() {
                                                     className={styles.markDoneButton}
                                                     onClick={() => markDone(t.id)}
                                                 >
-                                                    Mark Done
+                                                    Marcar como hecho
                                                 </button>
                                                 <button
                                                     className={styles.editTaskButton}
                                                     onClick={() => handleEditTask(t.id)}
                                                 >
-                                                    Edit
+                                                    Editar
                                                 </button>
                                                 <button
                                                     className={styles.deleteTaskButton}
                                                     onClick={() => deleteTask(t.id)}
                                                 >
-                                                    Delete
+                                                    Eliminar
                                                 </button>
                                             </div>
                                         )}
@@ -147,13 +147,13 @@ function TaskScheduler() {
                     </table>
                 </div>
                 <div className={styles.completedTaskList}>
-                    <h2 className={styles.completedHeading}>Completed Tasks</h2>
+                    <h2 className={styles.completedHeading}>Tareas completadas</h2>
                     <table className={styles.completedTable}>
                         <thead>
                             <tr>
-                                <th>Task Name</th>
-                                <th>Priority</th>
-                                <th>Deadline</th>
+                                <th>Nombre de la tarea</th>
+                                <th>Prioridad</th>
+                                <th>Fecha Limite</th>
                             </tr>
                         </thead>
                         <tbody>

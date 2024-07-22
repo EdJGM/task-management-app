@@ -8,7 +8,7 @@ export class TaskController {
 
     addTask(taskName: string, taskPriority: string, taskDeadline: string) {
         if (taskName.trim() === "" || taskDeadline === "") {
-            alert("Please enter a task and select a valid deadline.");
+            alert("Introduzca una tarea y seleccione una fecha límite válida.");
             return;
         }
 
@@ -16,7 +16,7 @@ export class TaskController {
         const currentDate = new Date();
 
         if (selectedDate <= currentDate) {
-            alert("Please select a future date for the deadline.");
+            alert("Seleccione una fecha futura para la fecha límite.");
             return;
         }
 
