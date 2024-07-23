@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { auth } from '../firebase/config'
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -13,11 +14,15 @@ const SignIn = () => {
     const handleSignIn = async () => {
         try {
             const res = await signInWithEmailAndPassword(email, password);
-            console.log({ res });
-            sessionStorage.setItem('user', String(true))
-            setEmail('');
-            setPassword('');
-            router.push('/')
+            if (res) {
+                console.log({ res });
+                sessionStorage.setItem('user', String(true));
+                setEmail('');
+                setPassword('');
+                router.push('/taskScheduler');
+            } else {
+                console.error('Error: Invalid credentials');
+            }
         } catch (e) {
             console.error(e)
         }
@@ -47,6 +52,9 @@ const SignIn = () => {
                 >
                     Ingresar
                 </button>
+                <p className="text-white mt-4 text-center">
+                    ¿No tienes una cuenta? <Link href="/sign-up" className="text-indigo-400 hover:underline">Regístrate</Link>
+                </p>
             </div>
         </div>
     );

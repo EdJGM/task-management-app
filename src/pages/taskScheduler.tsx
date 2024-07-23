@@ -28,6 +28,16 @@ function TaskScheduler() {
         }
     }, [user, userSession, router]);
 
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            sessionStorage.removeItem('user');
+            router.push('/sign-in');
+        } catch (error) {
+            console.error('Error signing out: ', error);
+        }
+    };
+
     const { tasks, completedTasks, addTask, editTask, deleteTask, markDone } = useTasks();
     const [taskName, setTaskName] = useState<string>("");
     const [taskPriority, setTaskPriority] = useState<string>("Top");
@@ -78,12 +88,6 @@ function TaskScheduler() {
                 <h1>Gestión de Tareas</h1>
             </header>
             <main>
-                <button onClick={() => {
-                    signOut(auth)
-                    sessionStorage.removeItem('user')
-                }}>
-                    Log out
-                </button>
                 <div className={styles.taskForm}>
                     <input
                         type="text"
@@ -198,6 +202,10 @@ function TaskScheduler() {
                     </table>
                 </div>
             </main>
+            <br />
+            <button className={styles.logoutButton} onClick={handleLogout}>
+                Log out
+            </button>
         </div>
     );
 }

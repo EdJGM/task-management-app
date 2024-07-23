@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { auth } from '../firebase/config'
+import Link from 'next/link';
 
 
 const SignUp = () => {
@@ -46,6 +47,9 @@ const SignUp = () => {
                 >
                     Registrarse
                 </button>
+                <p className="text-white mt-4 text-center">
+                    ¿Ya tienes una cuenta? <Link href="/sign-in" className="text-indigo-400 hover:underline">Inicia sesión</Link>
+                </p>
             </div>
         </div>
     );
