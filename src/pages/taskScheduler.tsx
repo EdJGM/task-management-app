@@ -84,20 +84,22 @@ function TaskScheduler() {
             <Head>
                 <title>Gestión de Tareas</title>
             </Head>
-            <header className={styles.taskHeader}>
-                <h1>Gestión de Tareas</h1>
+            <header className={`${styles.taskHeader} shadow-md`}>
+                <h1 className="text-3xl font-bold text-white text-center p-6 bg-gray-800">
+                    Gestión de Tareas
+                </h1>
             </header>
-            <main>
-                <div className={styles.taskForm}>
+            <main className="p-4 bg-gray-100 min-h-screen">
+                <div className={`${styles.taskForm} flex flex-col space-y-4`}>
                     <input
                         type="text"
-                        className={styles.taskNameInput}
+                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring focus:ring-indigo-500 transition duration-300"
                         placeholder="Introducir tarea..."
                         value={taskName}
                         onChange={handleTaskNameChange}
                     />
                     <select
-                        className={styles.taskPrioritySelect}
+                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring focus:ring-indigo-500 transition duration-300"
                         value={taskPriority}
                         onChange={handleTaskPriorityChange}
                     >
@@ -107,26 +109,33 @@ function TaskScheduler() {
                     </select>
                     <input
                         type="date"
-                        className={styles.taskDeadlineInput}
+                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring focus:ring-indigo-500 transition duration-300"
                         value={taskDeadline}
                         onChange={handleTaskDeadlineChange}
                     />
-                    <button className={styles.addTaskButton} onClick={handleAddTask}>
+                    <button
+                        className="w-full p-3 bg-indigo-600 rounded-lg text-white hover:bg-indigo-500 transition duration-300 font-medium"
+                        onClick={handleAddTask}
+                    >
                         Agregar Tareas
                     </button>
                 </div>
-                <div className={styles.searchFilter}>
+                <div className={`${styles.searchFilter} flex space-x-4 mt-6`}>
                     <input
                         type="text"
-                        className={styles.searchInput}
+                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring focus:ring-indigo-500 transition duration-300"
                         placeholder="Buscar tarea/s..."
                         value={searchKeyword}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchKeyword(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            setSearchKeyword(e.target.value)
+                        }
                     />
                     <select
-                        className={styles.filterPrioritySelect}
+                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring focus:ring-indigo-500 transition duration-300"
                         value={filterPriority}
-                        onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilterPriority(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                            setFilterPriority(e.target.value)
+                        }
                     >
                         <option value="">Todo</option>
                         <option value="Top">Alta Prioridad</option>
@@ -134,40 +143,40 @@ function TaskScheduler() {
                         <option value="Low">Baja Prioridad</option>
                     </select>
                 </div>
-                <h2 className={styles.heading}>Próximas tareas</h2>
-                <div className={styles.taskList}>
-                    <table className={styles.taskTable}>
-                        <thead>
+                <h2 className="text-2xl font-semibold mt-8">Próximas tareas</h2>
+                <div className="overflow-x-auto mt-4">
+                    <table className="w-full bg-white shadow-md rounded-lg">
+                        <thead className="bg-gray-800 text-white">
                             <tr>
-                                <th>Nombre de la tarea</th>
-                                <th>Prioridad</th>
-                                <th>Fecha Limite</th>
-                                <th>Acción</th>
+                                <th className="p-3">Nombre de la tarea</th>
+                                <th className="p-3">Prioridad</th>
+                                <th className="p-3">Fecha Limite</th>
+                                <th className="p-3">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredTasks.map((t) => (
-                                <tr key={t.id}>
-                                    <td>{t.task}</td>
-                                    <td>{t.priority}</td>
-                                    <td>{t.deadline}</td>
-                                    <td>
+                                <tr key={t.id} className="border-b hover:bg-gray-100">
+                                    <td className="p-3">{t.task}</td>
+                                    <td className="p-3">{t.priority}</td>
+                                    <td className="p-3">{t.deadline}</td>
+                                    <td className="p-3">
                                         {!t.done && (
-                                            <div>
+                                            <div className="flex space-x-2">
                                                 <button
-                                                    className={styles.markDoneButton}
+                                                    className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-400 transition duration-300"
                                                     onClick={() => markDone(t.id)}
                                                 >
                                                     Marcar como hecho
                                                 </button>
                                                 <button
-                                                    className={styles.editTaskButton}
+                                                    className="p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-400 transition duration-300"
                                                     onClick={() => handleEditTask(t.id)}
                                                 >
                                                     Editar
                                                 </button>
                                                 <button
-                                                    className={styles.deleteTaskButton}
+                                                    className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-400 transition duration-300"
                                                     onClick={() => deleteTask(t.id)}
                                                 >
                                                     Eliminar
@@ -180,32 +189,38 @@ function TaskScheduler() {
                         </tbody>
                     </table>
                 </div>
-                <div className={styles.completedTaskList}>
-                    <h2 className={styles.completedHeading}>Tareas completadas</h2>
-                    <table className={styles.completedTable}>
-                        <thead>
-                            <tr>
-                                <th>Nombre de la tarea</th>
-                                <th>Prioridad</th>
-                                <th>Fecha Limite</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {completedTasks.map((ct) => (
-                                <tr key={ct.id}>
-                                    <td>{ct.task}</td>
-                                    <td>{ct.priority}</td>
-                                    <td>{ct.deadline}</td>
+                <div className="mt-10">
+                    <h2 className="text-2xl font-semibold">Tareas completadas</h2>
+                    <div className="overflow-x-auto mt-4">
+                        <table className="w-full bg-white shadow-md rounded-lg">
+                            <thead className="bg-gray-800 text-white">
+                                <tr>
+                                    <th className="p-3">Nombre de la tarea</th>
+                                    <th className="p-3">Prioridad</th>
+                                    <th className="p-3">Fecha Limite</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {completedTasks.map((ct) => (
+                                    <tr key={ct.id} className="border-b hover:bg-gray-100">
+                                        <td className="p-3">{ct.task}</td>
+                                        <td className="p-3">{ct.priority}</td>
+                                        <td className="p-3">{ct.deadline}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
-            <br />
-            <button className={styles.logoutButton} onClick={handleLogout}>
-                Log out
-            </button>
+            <div className="flex justify-center mt-6">
+                <button
+                    className="p-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+                    onClick={handleLogout}
+                >
+                    Log out
+                </button>
+            </div>
         </div>
     );
 }
