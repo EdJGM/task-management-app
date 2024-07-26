@@ -13,6 +13,13 @@ function TaskScheduler() {
     const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+    const [taskName, setTaskName] = useState<string>("");
+    const [taskPriority, setTaskPriority] = useState<string>("Alta");
+    const [taskDeadline, setTaskDeadline] = useState<string>("");
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
+    const [filterPriority, setFilterPriority] = useState<string>("");
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const taskController = new TaskController();
 
     useEffect(() => {
@@ -27,12 +34,6 @@ function TaskScheduler() {
         }
     }, [user]);
 
-    const [taskName, setTaskName] = useState<string>("");
-    const [taskPriority, setTaskPriority] = useState<string>("Top");
-    const [taskDeadline, setTaskDeadline] = useState<string>("");
-    const [searchKeyword, setSearchKeyword] = useState<string>("");
-    const [filterPriority, setFilterPriority] = useState<string>("");
-
     const handleTaskNameChange = (e: ChangeEvent<HTMLInputElement>) => {
         setTaskName(e.target.value);
     };
@@ -46,11 +47,14 @@ function TaskScheduler() {
     };
 
     const handleAddTask = async () => {
-        await taskController.addTask(taskName, taskPriority, taskDeadline);
-        setTasks([...taskController.tasks]);
-        setTaskName("");
-        setTaskPriority("Top");
-        setTaskDeadline("");
+        if (!isEditing) {
+            await taskController.addTask(taskName, taskPriority, taskDeadline);
+            // Actualiza el estado de las tareas con una copia del array existente más la nueva tarea
+            setTasks([...tasks, ...taskController.tasks.filter(task => !tasks.some(t => t.id === task.id))]);
+            setTaskName("");
+            setTaskPriority("Alta");
+            setTaskDeadline("");
+        }
     };
 
     const handleEditTask = async (id: string) => {
@@ -59,19 +63,45 @@ function TaskScheduler() {
             setTaskName(taskToEdit.task);
             setTaskPriority(taskToEdit.priority);
             setTaskDeadline(taskToEdit.deadline);
-            await taskController.editTask(id, taskName, taskPriority, taskDeadline);
-            setTasks([...taskController.tasks]);
+            setIsEditing(true);
+            setEditingTaskId(id);
+        }
+    };
+
+    const handleSaveEditTask = async () => {
+        if (editingTaskId) {
+            await taskController.editTask(editingTaskId, taskName, taskPriority, taskDeadline);
+
+            // Actualiza el estado de las tareas
+            const updatedTasks = tasks.map(task =>
+                task.id === editingTaskId
+                    ? { ...task, task: taskName, priority: taskPriority, deadline: taskDeadline }
+                    : task
+            );
+            setTasks(updatedTasks);
+
+            // Restablece los campos de entrada y el estado de edición
+            setTaskName("");
+            setTaskPriority("Alta");
+            setTaskDeadline("");
+            setIsEditing(false);
+            setEditingTaskId(null);
         }
     };
 
     const handleDeleteTask = async (id: string) => {
         await taskController.deleteTask(id);
-        setTasks([...taskController.tasks]);
+        setTasks(tasks.filter(task => task.id !== id));
     };
 
     const handleMarkDone = async (id: string) => {
         await taskController.markDone(id);
-        window.location.reload(); // Refrescar la página automáticamente
+        const updatedTasks = tasks.filter(task => task.id !== id);
+        setTasks(updatedTasks);
+        const completedTask = tasks.find(task => task.id === id);
+        if (completedTask) {
+            setCompletedTasks([...completedTasks, completedTask]);
+        }
     };
 
     const handleLogout = async () => {
@@ -85,7 +115,7 @@ function TaskScheduler() {
     };
 
     const filteredTasks = tasks
-        .filter((t) => !t.done)
+        .filter((t) => t.status !== "completed")
         .filter((t) => t.task.toLowerCase().includes(searchKeyword.toLowerCase()))
         .filter((t) => (filterPriority ? t.priority === filterPriority : true));
 
@@ -113,9 +143,9 @@ function TaskScheduler() {
                         value={taskPriority}
                         onChange={handleTaskPriorityChange}
                     >
-                        <option value="Top">Alta Prioridad</option>
-                        <option value="Middle">Media Prioridad</option>
-                        <option value="Low">Baja Prioridad</option>
+                        <option value="Alta">Alta Prioridad</option>
+                        <option value="Media">Media Prioridad</option>
+                        <option value="Baja">Baja Prioridad</option>
                     </select>
                     <input
                         type="date"
@@ -125,9 +155,9 @@ function TaskScheduler() {
                     />
                     <button
                         className="w-full p-3 bg-indigo-600 rounded-lg text-white hover:bg-indigo-500 transition duration-300 font-medium"
-                        onClick={handleAddTask}
+                        onClick={isEditing ? handleSaveEditTask : handleAddTask}
                     >
-                        Agregar Tareas
+                        {isEditing ? "Guardar Cambios" : "Agregar Tareas"}
                     </button>
                 </div>
                 <div className={`${styles.searchFilter} flex space-x-4 mt-6`}>
@@ -148,9 +178,9 @@ function TaskScheduler() {
                         }
                     >
                         <option value="">Todo</option>
-                        <option value="Top">Alta Prioridad</option>
-                        <option value="Middle">Media Prioridad</option>
-                        <option value="Low">Baja Prioridad</option>
+                        <option value="Alta">Alta Prioridad</option>
+                        <option value="Media">Media Prioridad</option>
+                        <option value="Baja">Baja Prioridad</option>
                     </select>
                 </div>
                 <h2 className="text-2xl font-semibold mt-8">Próximas tareas</h2>
@@ -228,7 +258,7 @@ function TaskScheduler() {
                     className="p-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition duration-300"
                     onClick={handleLogout}
                 >
-                    Log out
+                    Salir
                 </button>
             </div>
         </div>

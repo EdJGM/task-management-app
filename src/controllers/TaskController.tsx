@@ -43,22 +43,26 @@ export class TaskController {
         }
     }
 
-    async editTask(id: string, taskName: string, taskPriority: string, taskDeadline: string) {
-        const user = auth.currentUser;
-        if (user) {
-            const taskDocRef = doc(db, "tasks", id);
-            try {
-                await updateDoc(taskDocRef, {
+    async editTask(taskId: string, taskName: string, taskPriority: string, taskDeadline: string) {
+        const taskRef = doc(db, "tasks", taskId);
+        try {
+            await updateDoc(taskRef, {
+                task: taskName,
+                priority: taskPriority,
+                deadline: taskDeadline,
+                updatedAt: new Date()
+            });
+            const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+            if (taskIndex !== -1) {
+                this.tasks[taskIndex] = {
+                    ...this.tasks[taskIndex],
                     task: taskName,
                     priority: taskPriority,
                     deadline: taskDeadline
-                });
-                this.tasks = this.tasks.map(task =>
-                    task.id === id ? { ...task, task: taskName, priority: taskPriority, deadline: taskDeadline } : task
-                );
-            } catch (error) {
-                console.error("Error editing task: ", error);
+                };
             }
+        } catch (error) {
+            console.error("Error editing task: ", error);
         }
     }
 
@@ -81,21 +85,15 @@ export class TaskController {
             const taskDocRef = doc(db, "tasks", id);
             try {
                 await updateDoc(taskDocRef, {
-                    status: "completed",
-                    completedAt: new Date()
+                    status: "completed"
                 });
-                const taskToMark = this.tasks.find((t) => t.id === id);
-                if (taskToMark) {
-                    taskToMark.done = true;
-                    this.completedTasks.push(taskToMark);
-                    this.tasks = this.tasks.filter((t) => t.id !== id);
-                }
-                return taskToMark; // Retorna la tarea completada
+                this.tasks = this.tasks.map(task =>
+                    task.id === id ? { ...task, status: "completed" } : task
+                );
             } catch (error) {
                 console.error("Error marking task as done: ", error);
             }
         }
-        return null;
     }
 
     async fetchTasks() {
