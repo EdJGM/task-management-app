@@ -17,17 +17,17 @@ export const useTasks = () => {
         setTasks([...taskControllerRef.current.tasks]);
     };
 
-    const editTask = (id: number, taskName: string, taskPriority: string, taskDeadline: string) => {
+    const editTask = (id: string, taskName: string, taskPriority: string, taskDeadline: string) => {
         taskControllerRef.current.editTask(id, taskName, taskPriority, taskDeadline);
         setTasks([...taskControllerRef.current.tasks]);
     };
 
-    const deleteTask = (id: number) => {
+    const deleteTask = (id: string) => {
         taskControllerRef.current.deleteTask(id);
         setTasks([...taskControllerRef.current.tasks]);
     };
 
-    const markDone = (id: number) => {
+    const markDone = (id: string) => {
         taskControllerRef.current.markDone(id);
         setTasks([...taskControllerRef.current.tasks]);
         setCompletedTasks([...taskControllerRef.current.completedTasks]);
