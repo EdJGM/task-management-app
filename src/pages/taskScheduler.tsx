@@ -1,44 +1,32 @@
-// src/pages/index.tsx
 import { useState, useEffect, ChangeEvent } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { useTasks } from "@/components/useTasks";
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../firebase/config'
-import { useRouter } from 'next/navigation';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebase/config';
+import { useRouter } from 'next/router';
 import { signOut } from 'firebase/auth';
-
+import { TaskController } from "../controllers/TaskController";
+import { Task } from "../models/Task";
 
 function TaskScheduler() {
-
     const [user] = useAuthState(auth);
-    const router = useRouter()
-    const [userSession, setUserSession] = useState<string | null>(null);
+    const router = useRouter();
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+    const taskController = new TaskController();
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const session = sessionStorage.getItem('user');
-            setUserSession(session);
+        if (user) {
+            const fetchTasks = async () => {
+                await taskController.fetchTasks();
+                setTasks(taskController.tasks);
+                await taskController.fetchCompletedTasks();
+                setCompletedTasks(taskController.completedTasks);
+            };
+            fetchTasks();
         }
-    }, []);
+    }, [user]);
 
-    useEffect(() => {
-        if (!user && !userSession) {
-            router.push('/sign-up');
-        }
-    }, [user, userSession, router]);
-
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            sessionStorage.removeItem('user');
-            router.push('/sign-in');
-        } catch (error) {
-            console.error('Error signing out: ', error);
-        }
-    };
-
-    const { tasks, completedTasks, addTask, editTask, deleteTask, markDone } = useTasks();
     const [taskName, setTaskName] = useState<string>("");
     const [taskPriority, setTaskPriority] = useState<string>("Top");
     const [taskDeadline, setTaskDeadline] = useState<string>("");
@@ -57,20 +45,42 @@ function TaskScheduler() {
         setTaskDeadline(e.target.value);
     };
 
-    const handleAddTask = () => {
-        addTask(taskName, taskPriority, taskDeadline);
+    const handleAddTask = async () => {
+        await taskController.addTask(taskName, taskPriority, taskDeadline);
+        setTasks([...taskController.tasks]);
         setTaskName("");
         setTaskPriority("Top");
         setTaskDeadline("");
     };
 
-    const handleEditTask = (id: number) => {
+    const handleEditTask = async (id: string) => {
         const taskToEdit = tasks.find((t) => t.id === id);
         if (taskToEdit) {
             setTaskName(taskToEdit.task);
             setTaskPriority(taskToEdit.priority);
             setTaskDeadline(taskToEdit.deadline);
-            editTask(id, taskName, taskPriority, taskDeadline);
+            await taskController.editTask(id, taskName, taskPriority, taskDeadline);
+            setTasks([...taskController.tasks]);
+        }
+    };
+
+    const handleDeleteTask = async (id: string) => {
+        await taskController.deleteTask(id);
+        setTasks([...taskController.tasks]);
+    };
+
+    const handleMarkDone = async (id: string) => {
+        await taskController.markDone(id);
+        window.location.reload(); // Refrescar la página automáticamente
+    };
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            sessionStorage.removeItem('user');
+            router.push('/sign-in');
+        } catch (error) {
+            console.error('Error signing out: ', error);
         }
     };
 
@@ -165,7 +175,7 @@ function TaskScheduler() {
                                             <div className="flex space-x-2">
                                                 <button
                                                     className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-400 transition duration-300"
-                                                    onClick={() => markDone(t.id)}
+                                                    onClick={() => handleMarkDone(t.id)}
                                                 >
                                                     Marcar como hecho
                                                 </button>
@@ -177,7 +187,7 @@ function TaskScheduler() {
                                                 </button>
                                                 <button
                                                     className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-400 transition duration-300"
-                                                    onClick={() => deleteTask(t.id)}
+                                                    onClick={() => handleDeleteTask(t.id)}
                                                 >
                                                     Eliminar
                                                 </button>
@@ -226,5 +236,3 @@ function TaskScheduler() {
 }
 
 export default TaskScheduler;
-
-
