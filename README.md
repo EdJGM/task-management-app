@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Task Management App
 
-First, run the development server:
+Aplicación web para la gestión de tareas desarrollada con [Next.js](https://nextjs.org/), Firebase y Tailwind CSS. Permite a los usuarios crear, editar, eliminar y programar tareas, con autenticación y protección de rutas.
 
+## Características
+
+- Registro e inicio de sesión de usuarios (Firebase Auth)
+- Creación, edición y eliminación de tareas
+- Programación de tareas
+- Interfaz moderna y responsiva (Tailwind CSS)
+- Protección de rutas para usuarios autenticados
+
+## Instalación
+
+1. Clona el repositorio:
+	```bash
+	git clone https://github.com/EdJGM/task-management-app.git
+	cd task-management-app
+	```
+2. Instala las dependencias:
+	```bash
+	npm install
+	# o
+	yarn install
+	```
+3. Configura Firebase:
+	- Crea un proyecto en [Firebase](https://firebase.google.com/).
+	- Copia tus credenciales en `src/firebase/config.ts`.
+
+## Uso
+
+Inicia el servidor de desarrollo:
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Estructura del proyecto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `src/components/`: Componentes reutilizables
+- `src/controllers/`: Lógica de negocio
+- `src/models/`: Modelos de datos
+- `src/pages/`: Páginas principales
+- `src/firebase/`: Configuración de Firebase
+- `src/styles/`: Estilos globales y locales
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Tecnologías
 
-## Learn More
+- Next.js
+- React
+- Firebase
+- Tailwind CSS
+- TypeScript
 
-To learn more about Next.js, take a look at the following resources:
+## Créditos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Desarrollado por EdJGM para el curso Desarrollo Web Avanzado (2024).
